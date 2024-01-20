@@ -70,3 +70,47 @@ def getFunctionForSide(point1, point2):
         slope = (y2 - y1) / (x2 - x1)
         yIntercept = y1 - slope * x1
         return (slope * -1, 1, yIntercept * -1)
+
+# checks if 2 squares are overlapping
+# square is a 2-tuple (sides, corners)
+# returns true if the squares overlap, false otherwise
+def isOverlapping(square1, square2):
+    sides1, corners1 = square1
+    sides2, corners2 = square2
+
+    for side1 in sides1:
+        for side2 in sides2:
+            intersection = getIntersection(side1, side2)
+            if intersection is not None and intersection not in corners1 and intersection not in corners2:
+                # If 2 sides are intersecting, and the intersection point is not a corner of either square, then the squares are overlapping
+                return True
+            
+    return False
+
+# side is a 4-tuple (a, b, c, bound)
+# returns intersction point (x, y) if the sides intersect, None otherwise
+def getIntersection(side1, side2):
+    a1, b1, c1, bound1 = side1
+    a2, b2, c2, bound2 = side2
+    
+    # Solve the system of linear equations
+    determinant = a1 * b2 - a2 * b1
+
+    if determinant == 0:
+        # Lines are parallel, no intersection
+        # For case where lines are the same, there are infinite intersections but does not count as overlapping
+        return None
+
+    # Calculate intersection point
+    x = (b1 * c2 - b2 * c1) / determinant
+    y = (a2 * c1 - a1 * c2) / determinant
+
+    # check if intersection point is within bounds
+    for bound in [bound1, bound2]:
+        low, high, xOrY = bound
+        if xOrY == "x" and (x < low or x > high):
+            return None
+        elif xOrY == "y" and (y < low or y > high):
+            return None
+
+    return (x, y)
