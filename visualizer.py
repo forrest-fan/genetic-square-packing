@@ -3,23 +3,24 @@
 import math
 import os
 
+# numSquares is total number of squares in this packing
+# corners is an array of length 4, each entry is the # of a squares in one corner
+# remaining is an array of length (numSquares - sum(corners)), each entry is a 3-tuple
+    # ((x, y), r, d) where (x, y) is the coordinates of 1 corner, r is rotation factor, d is direction to move if overlap
 def visualize(numSquares, corners, remaining):
-    # numSquares is total number of squares in this packing
-    # corners is an array of length 4, each entry is the # of a squares in one corner
-    # remaining is an array of length (numSquares - sum(corners)), each entry is a 3-tuple
-        # ((x, y), r, d) where (x, y) is the coordinates of 1 corner, r is rotation factor, d is direction to move if overlap
-    
     if os.path.exists("outputs/formulas.txt"):
         os.remove("outputs/formulas.txt")
 
     with open ("outputs/formulas.txt", "w") as f:
         # save formulas to plug into desmos
         formula = "{a}x + {b}y + {c} = 0 {bound}"
-        squareFormulas = [getSquareFormulas(square) for square in remaining]
-        for square in squareFormulas:
-            for side in square:
+        squareInfo = [(info[0], info[1]) for info in (getSquareInfo(square) for square in remaining)]
+        for square in squareInfo:
+            for side in square[0]:
                 a, b, c, bound = side
-                fx = formula.format(a=a, b=b, c=c, bound=bound)
+                low, high, xOrY = bound
+                boundString = "\\left\\{{{low} \\leq {xOrY} \\leq {high}\\right\\}}".format(low=low, high=high, xOrY=xOrY)
+                fx = formula.format(a=a, b=b, c=c, bound=boundString)
                 f.write(fx + "\n")
 
         f.close()
@@ -27,8 +28,9 @@ def visualize(numSquares, corners, remaining):
     return
 
 # square is a 3-tuple ((x, y), r, d)
-# returns the 4 lines of the square in the form ax + by + c = 0 and the bounds in the form (a, b, c, bound)
-def getSquareFormulas(square):
+# returns the 4 lines of the square in the form ax + by + c = 0 and the bounds in the form (a, b, c, bound); bound is a 3-tuple in the form (low, high, xOrY)
+# and the 4 corners in the form (x, y)
+def getSquareInfo(square):
     point, r, d = square
     x, y = point
     s = math.cos(r)
@@ -50,12 +52,10 @@ def getSquareFormulas(square):
         x1, y1 = corners[i]
         x2, y2 = corners[(i + 1) % 4]
         a, b, c = sides[i]
-        boundString = "{low} \\leq {xOrY} \\leq {high}"
-        bound = boundString.format(low=min(x1, x2), high=max(x1, x2), xOrY="x") if b != 0 else boundString.format(low=min(y1, y2), high=max(y1, y2), xOrY="y")
-        bound = "\\left\\{" + bound + "\\right\\}"
+        bound = (min(x1, x2), max(x1, x2), "x") if b != 0 else (min(y1, y2), max(y1, y2), "y")
         boundedSides.append((a, b, c, bound))
 
-    return boundedSides
+    return boundedSides, corners
 
 # point1 and point2 are 2-tuples (x, y)
 # slope is a value m
