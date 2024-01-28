@@ -210,6 +210,22 @@ def getDistancesToTry(square, allSquares):
 
         cornerIndex += 1
 
+    # also try extending from all other squares
+    oppositeD = (d + 180) % 360
+    for sq in allSquares:
+        if sq == square:
+            continue
+
+        _, otherCorners, _ = sq
+        for corner in otherCorners:
+            otherExtension = getBoundedLineThroughPoint(oppositeD, corner[0], corner[1])
+
+            for side in lines:
+                intersection = getIntersection(otherExtension, side)
+                if intersection is not None:
+                    dist = getDistance(corner, intersection)
+                    distancesToTry.append(dist)
+
     # sort cornersToTry by distance from old corner; we want to move the square as little as possible
     distancesToTry.sort()
 
