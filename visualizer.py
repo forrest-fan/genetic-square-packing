@@ -41,7 +41,7 @@ def writeDesmosFormulaForLine(line):
     a, b, c, bound = line
     low, high, xOrY = bound
     formula = "{a}x + {b}y + {c} = 0 {bound}"
-    if low == math.inf:
+    if low == -math.inf:
         boundString = "\\left\\{{{xOrY} \\leq {high}\\right\\}}".format(high=high, xOrY=xOrY)
     elif high == math.inf:
         boundString = "\\left\\{{{low} \\leq {xOrY}\\right\\}}".format(low=low, xOrY=xOrY)
@@ -147,7 +147,7 @@ def arePointsEqualFloatArithmeticSafe(point1, point2):
     x1, y1 = point1
     x2, y2 = point2
 
-    return math.isclose(x1, x2) and math.isclose(y1, y2)
+    return math.isclose(x1, x2, abs_tol=0.00001) and math.isclose(y1, y2, abs_tol=0.00001)
 
 # squares is an array of 3-tuples (lines, corners, d)
 # returns an array of 3-tuples (lines, corners, d) with no overlaps
@@ -242,12 +242,12 @@ def getBoundedLineThroughPoint(d, x, y):
         
     if d == 270:
         # line points down, so has upper bound, no lower bound
-        return (1, 0, x * -1, (math.inf, y, "y"))
+        return (1, 0, x * -1, (-math.inf, y, "y"))
     
     slope = math.tan(math.radians(d))
     yIntercept = y - slope * x
 
-    bound = (x, math.inf, "x") if d < 90 or d > 270 else (math.inf, x, "x")
+    bound = (x, math.inf, "x") if d < 90 or d > 270 else (-math.inf, x, "x")
 
     return (slope * -1, 1, yIntercept * -1, bound)
 
@@ -266,7 +266,7 @@ def movePointAlongLine(corner, line, distance):
 
     if xOrY == "y":
         # vertical line
-        if low != math.inf:
+        if low != -math.inf:
             # has lower bound, move upward
             return (x, low + distance)
         else:
@@ -278,7 +278,7 @@ def movePointAlongLine(corner, line, distance):
         distX = distance / math.sqrt(1 + slope ** 2)
         distY = distance * slope / math.sqrt(1 + slope ** 2)
 
-        if low != math.inf:
+        if low != -math.inf:
             # has lower bound, move rightward
             return (x + distX, y + distY)
         else:

@@ -22,3 +22,9 @@ sq2Before = ((4, 4), 55, 122)
 sq3Before = ((3, 4), 80, 25)
 
 visualizer.visualize(0, [0, 0, 0, 0], [sq1Before, sq2Before, sq3Before]) 
+
+# Test multiple overlaps
+sq4Before = ((3.5, 4), 12, 75)
+sq5Before = ((4, 3.5), 63, 236)
+
+visualizer.visualize(0, [0, 0, 0, 0], [sq1Before, sq2Before, sq3Before, sq4Before, sq5Before])
