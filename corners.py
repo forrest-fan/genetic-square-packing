@@ -1,8 +1,21 @@
-import visualizer
+import utils
 import os
 
 # Corners will remain fixed during the GA process
 # We will use this to set the corners, and pass it into the first solution
+
+def writeFormulasToFile(cornerSquareInfo):
+    if os.path.exists("outputs/corners.txt"):
+        os.remove("outputs/corners.txt")
+
+    with open("outputs/corners.txt", "w") as f:
+        for corner in cornerSquareInfo:
+            f.write(str(len(corner)) + " corners\n")
+            formulas = [utils.writeDesmosFormulas(square) for square in corner]
+            for formula in formulas:
+                f.write("\n".join(formula) + "\n")
+
+        f.close()
 
 # returns a nested list of squares that are in the corners
 # uses a generation function to generate the squares, can define new ones to try different corner configs
@@ -51,7 +64,7 @@ def moveCornerTo100(topLeftCoordinates, cornerIndex):
 def getCornerSquareInfo(cornerSquares):
     cornerSquareInfo = []
     for corner in cornerSquares:
-        thisCorner = [visualizer.getSquareInfo((coordinate, 0, 0)) for coordinate in corner]
+        thisCorner = [utils.getSquareInfo((coordinate, 0, 0)) for coordinate in corner]
         cornerSquareInfo.append(thisCorner)
 
     return cornerSquareInfo
