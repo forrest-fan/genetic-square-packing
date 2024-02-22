@@ -1,4 +1,6 @@
 import visualizer
+import corners
+import os
 
 # Test base visualizer, no overlap
 squares = [((4, 3), 75, 12), ((13, 2), 45, 1), ((2, -1), 30, 2), ((2, 2), 0, 0)]
@@ -28,3 +30,11 @@ sq4Before = ((3.5, 4), 12, 75)
 sq5Before = ((4, 3.5), 63, 236)
 
 visualizer.visualize(0, [0, 0, 0, 0], [sq1Before, sq2Before, sq3Before, sq4Before, sq5Before])
+
+# test corner generation, moved to respective (100, 100)
+cornerSquares = corners.assembleCornerSquares([12, 7, 6, 5], corners.generateFromInsideOut)
+corners.writeFormulasToFile(cornerSquares)
+
+# test moving bounding box of squares to middle
+fixedSquares = visualizer.fixOverlaps([visualizer.getSquareInfo(sq) for sq in [sq1Before, sq2Before, sq3Before, sq4Before, sq5Before]])
+visualizer.visualizeMiddleSquares(fixedSquares)

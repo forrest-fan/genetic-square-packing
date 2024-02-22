@@ -300,4 +300,69 @@ def movePointAlongLine(corner, line, distance):
         else:
             # has upper bound, move leftward
             return (x - distX, y - distY)
-        
+
+def visualizeMiddleSquares(middleSquares):
+    boundingBox = getBoundingBoxForMiddle(middleSquares)
+    centeredSquares = moveMiddleSquaresToCenter(middleSquares, boundingBox)
+    if os.path.exists("outputs/centeredSquares.txt"):
+        os.remove("outputs/centeredSquares.txt")
+
+    with open ("outputs/centeredSquares.txt", "w") as f:
+            # save formulas to plug into desmos
+            for square in centeredSquares:
+                    f.write("\n".join(writeDesmosFormulas(square)) + "\n")
+            f.close()
+
+# middleSquares is an array of 3-tuples (lines, corners, d) (overlaps should be fixed already)
+# cornerSquares is a list of 4 arrays of 3-tuples (lines, corners, d); started at (100, 100) for each corner
+# returns an array of 3-tuples (lines, corners, d) with no overlaps
+def wrapMiddleWithCorners(middleSquares, cornerSquares):
+    # create 45 degree extensions from each corner
+    
+    pass
+
+# middleSquares is an array of 3-tuples (lines, corners, d) (overlaps should be fixed already)
+# returns the bounding box for the middle squares in the form (left, right, top, bottom)
+def getBoundingBoxForMiddle(middleSquares):
+    left = math.inf
+    right = -math.inf
+    top = -math.inf
+    bottom = math.inf
+
+    for square in middleSquares:
+        _, corners, _ = square
+        for corner in corners:
+            x, y = corner
+            left = min(left, x)
+            right = max(right, x)
+            top = max(top, y)
+            bottom = min(bottom, y)
+
+    return (left, right, top, bottom)
+
+# middleSquares is an array of 3-tuples (lines, corners, d) (overlaps should be fixed already)
+# boundingBox is a 4-tuple (left, right, top, bottom)
+# moves all squares so that the center of the bounding box is at (0, 0), returns a list of the new squares
+def moveMiddleSquaresToCenter(middleSquares, boundingBox):
+    left, right, top, bottom = boundingBox
+    middleX = (left + right) / 2
+    middleY = (top + bottom) / 2
+
+    moveX = 0 - middleX
+    moveY = 0 - middleY
+
+    # move all squares so that the center of the bounding box is at (0, 0)
+    newSquares = [moveSquare(square, moveX, moveY) for square in middleSquares]
+
+    return newSquares
+
+# square is a 3-tuple (lines, corners, d)
+# moveX and moveY are values to move along the x and y axes
+# returns a new square tuple after moving by moveX and moveY
+def moveSquare(square, moveX, moveY):
+    lines, corners, d = square
+    newCorners = [(x + moveX, y + moveY) for x, y in corners]
+    newSides = []
+    for i in range(4):
+        newSides.append(getBoundedFunctionForSide(newCorners[i], newCorners[(i + 1) % 4]))
+    return (newSides, newCorners, d)
