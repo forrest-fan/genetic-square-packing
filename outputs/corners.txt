@@ -1,32 +1,4 @@
-12 corners
--0.0x + 1y + -100.0 = 0 \left\{-100 \leq x \leq -99.0\right\}
-1x + 0y + 99.0 = 0 \left\{99.0 \leq y \leq 100.0\right\}
-0.0x + 1y + -99.0 = 0 \left\{-100.0 \leq x \leq -99.0\right\}
-1x + 0y + 100.0 = 0 \left\{99.0 \leq y \leq 100\right\}
--0.0x + 1y + -99.0 = 0 \left\{-100 \leq x \leq -99.0\right\}
-1x + 0y + 99.0 = 0 \left\{98.0 \leq y \leq 99.0\right\}
-0.0x + 1y + -98.0 = 0 \left\{-100.0 \leq x \leq -99.0\right\}
-1x + 0y + 100.0 = 0 \left\{98.0 \leq y \leq 99\right\}
--0.0x + 1y + -100.0 = 0 \left\{-99 \leq x \leq -98.0\right\}
-1x + 0y + 98.0 = 0 \left\{99.0 \leq y \leq 100.0\right\}
-0.0x + 1y + -99.0 = 0 \left\{-99.0 \leq x \leq -98.0\right\}
-1x + 0y + 99.0 = 0 \left\{99.0 \leq y \leq 100\right\}
--0.0x + 1y + -98.0 = 0 \left\{-100 \leq x \leq -99.0\right\}
-1x + 0y + 99.0 = 0 \left\{97.0 \leq y \leq 98.0\right\}
-0.0x + 1y + -97.0 = 0 \left\{-100.0 \leq x \leq -99.0\right\}
-1x + 0y + 100.0 = 0 \left\{97.0 \leq y \leq 98\right\}
--0.0x + 1y + -99.0 = 0 \left\{-99 \leq x \leq -98.0\right\}
-1x + 0y + 98.0 = 0 \left\{98.0 \leq y \leq 99.0\right\}
-0.0x + 1y + -98.0 = 0 \left\{-99.0 \leq x \leq -98.0\right\}
-1x + 0y + 99.0 = 0 \left\{98.0 \leq y \leq 99\right\}
--0.0x + 1y + -100.0 = 0 \left\{-98 \leq x \leq -97.0\right\}
-1x + 0y + 97.0 = 0 \left\{99.0 \leq y \leq 100.0\right\}
-0.0x + 1y + -99.0 = 0 \left\{-98.0 \leq x \leq -97.0\right\}
-1x + 0y + 98.0 = 0 \left\{99.0 \leq y \leq 100\right\}
--0.0x + 1y + -97.0 = 0 \left\{-100 \leq x \leq -99.0\right\}
-1x + 0y + 99.0 = 0 \left\{96.0 \leq y \leq 97.0\right\}
-0.0x + 1y + -96.0 = 0 \left\{-100.0 \leq x \leq -99.0\right\}
-1x + 0y + 100.0 = 0 \left\{96.0 \leq y \leq 97\right\}
+5 corners
 -0.0x + 1y + -98.0 = 0 \left\{-99 \leq x \leq -98.0\right\}
 1x + 0y + 98.0 = 0 \left\{97.0 \leq y \leq 98.0\right\}
 0.0x + 1y + -97.0 = 0 \left\{-99.0 \leq x \leq -98.0\right\}
@@ -47,19 +19,7 @@
 1x + 0y + 98.0 = 0 \left\{96.0 \leq y \leq 97.0\right\}
 0.0x + 1y + -96.0 = 0 \left\{-99.0 \leq x \leq -98.0\right\}
 1x + 0y + 99.0 = 0 \left\{96.0 \leq y \leq 97\right\}
-7 corners
--0.0x + 1y + -100.0 = 0 \left\{99 \leq x \leq 100.0\right\}
-1x + 0y + -100.0 = 0 \left\{99.0 \leq y \leq 100.0\right\}
-0.0x + 1y + -99.0 = 0 \left\{99.0 \leq x \leq 100.0\right\}
-1x + 0y + -99.0 = 0 \left\{99.0 \leq y \leq 100\right\}
--0.0x + 1y + -99.0 = 0 \left\{99 \leq x \leq 100.0\right\}
-1x + 0y + -100.0 = 0 \left\{98.0 \leq y \leq 99.0\right\}
-0.0x + 1y + -98.0 = 0 \left\{99.0 \leq x \leq 100.0\right\}
-1x + 0y + -99.0 = 0 \left\{98.0 \leq y \leq 99\right\}
--0.0x + 1y + -100.0 = 0 \left\{98 \leq x \leq 99.0\right\}
-1x + 0y + -99.0 = 0 \left\{99.0 \leq y \leq 100.0\right\}
-0.0x + 1y + -99.0 = 0 \left\{98.0 \leq x \leq 99.0\right\}
-1x + 0y + -98.0 = 0 \left\{99.0 \leq y \leq 100\right\}
+4 corners
 -0.0x + 1y + -98.0 = 0 \left\{99 \leq x \leq 100.0\right\}
 1x + 0y + -100.0 = 0 \left\{97.0 \leq y \leq 98.0\right\}
 0.0x + 1y + -97.0 = 0 \left\{99.0 \leq x \leq 100.0\right\}
@@ -76,19 +36,7 @@
 1x + 0y + -100.0 = 0 \left\{96.0 \leq y \leq 97.0\right\}
 0.0x + 1y + -96.0 = 0 \left\{99.0 \leq x \leq 100.0\right\}
 1x + 0y + -99.0 = 0 \left\{96.0 \leq y \leq 97\right\}
-6 corners
--0.0x + 1y + 99.0 = 0 \left\{99 \leq x \leq 100.0\right\}
-1x + 0y + -100.0 = 0 \left\{-100.0 \leq y \leq -99.0\right\}
-0.0x + 1y + 100.0 = 0 \left\{99.0 \leq x \leq 100.0\right\}
-1x + 0y + -99.0 = 0 \left\{-100.0 \leq y \leq -99\right\}
--0.0x + 1y + 98.0 = 0 \left\{99 \leq x \leq 100.0\right\}
-1x + 0y + -100.0 = 0 \left\{-99.0 \leq y \leq -98.0\right\}
-0.0x + 1y + 99.0 = 0 \left\{99.0 \leq x \leq 100.0\right\}
-1x + 0y + -99.0 = 0 \left\{-99.0 \leq y \leq -98\right\}
--0.0x + 1y + 99.0 = 0 \left\{98 \leq x \leq 99.0\right\}
-1x + 0y + -99.0 = 0 \left\{-100.0 \leq y \leq -99.0\right\}
-0.0x + 1y + 100.0 = 0 \left\{98.0 \leq x \leq 99.0\right\}
-1x + 0y + -98.0 = 0 \left\{-100.0 \leq y \leq -99\right\}
+3 corners
 -0.0x + 1y + 97.0 = 0 \left\{99 \leq x \leq 100.0\right\}
 1x + 0y + -100.0 = 0 \left\{-98.0 \leq y \leq -97.0\right\}
 0.0x + 1y + 98.0 = 0 \left\{99.0 \leq x \leq 100.0\right\}
@@ -101,15 +49,7 @@
 1x + 0y + -98.0 = 0 \left\{-100.0 \leq y \leq -99.0\right\}
 0.0x + 1y + 100.0 = 0 \left\{97.0 \leq x \leq 98.0\right\}
 1x + 0y + -97.0 = 0 \left\{-100.0 \leq y \leq -99\right\}
-5 corners
--0.0x + 1y + 99.0 = 0 \left\{-100 \leq x \leq -99.0\right\}
-1x + 0y + 99.0 = 0 \left\{-100.0 \leq y \leq -99.0\right\}
-0.0x + 1y + 100.0 = 0 \left\{-100.0 \leq x \leq -99.0\right\}
-1x + 0y + 100.0 = 0 \left\{-100.0 \leq y \leq -99\right\}
--0.0x + 1y + 98.0 = 0 \left\{-100 \leq x \leq -99.0\right\}
-1x + 0y + 99.0 = 0 \left\{-99.0 \leq y \leq -98.0\right\}
-0.0x + 1y + 99.0 = 0 \left\{-100.0 \leq x \leq -99.0\right\}
-1x + 0y + 100.0 = 0 \left\{-99.0 \leq y \leq -98\right\}
+3 corners
 -0.0x + 1y + 99.0 = 0 \left\{-99 \leq x \leq -98.0\right\}
 1x + 0y + 98.0 = 0 \left\{-100.0 \leq y \leq -99.0\right\}
 0.0x + 1y + 100.0 = 0 \left\{-99.0 \leq x \leq -98.0\right\}

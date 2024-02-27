@@ -69,15 +69,37 @@ def getCornerSquareInfo(cornerSquares):
 
     return cornerSquareInfo
 
-def writeFormulasToFile(cornerSquareInfo):
-    if os.path.exists("outputs/corners.txt"):
-        os.remove("outputs/corners.txt")
+# cornerSquares is a list of 4 arrays of 3-tuples (lines, corners, d); started at (100, 100) for each corner
+# this method finds and keeps the squares that are facing inwards; only these squares will "touch" the middle squares
+# we find the inner-facing squares by checking whether the inner-facing corner has an adjacent square that is closer to the center
+def filterCornersForInnerFacingSquaresOnly(cornerSquares):
+    closerToCenter = [(1, -1), (-1, -1), (-1, 1), (1, 1)]
+    filteredCorners = [[], [], [], []]
+    for i in range(len(cornerSquares)):
+        innerFacingCornerIndex = (i + 2) % 4
+        squares = cornerSquares[i]
+        for sq in squares:
+            _, corners, _ = sq
+            innerCorner = corners[innerFacingCornerIndex]
+            closerCorner = (innerCorner[0] + closerToCenter[i][0], innerCorner[1] + closerToCenter[i][1])
+            closerToX = (innerCorner[0] + closerToCenter[i][0], innerCorner[1])
+            closerToY = (innerCorner[0], innerCorner[1] + closerToCenter[i][1])
+            foundCloser = False
+            foundX = False
+            foundY = False
+            for sq2 in squares:
+                corner2 = sq2[1][innerFacingCornerIndex]
+                if corner2 == closerCorner:
+                    foundCloser = True
+                    break
+                    
+                if corner2 == closerToX:
+                    foundX = True
+                if corner2 == closerToY:
+                    foundY = True
 
-    with open("outputs/corners.txt", "w") as f:
-        for corner in cornerSquareInfo:
-            f.write(str(len(corner)) + " corners\n")
-            formulas = [visualizer.writeDesmosFormulas(square) for square in corner]
-            for formula in formulas:
-                f.write("\n".join(formula) + "\n")
+            if (not foundCloser) and not (foundX and foundY):
+                filteredCorners[i].append(sq)
 
-        f.close()
+    return filteredCorners
+

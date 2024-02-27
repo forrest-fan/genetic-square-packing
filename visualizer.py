@@ -1,6 +1,6 @@
 # This module will convert an encoded binary solution into an SVG of the solution
 import utils
-import corners
+from corners import filterCornersForInnerFacingSquaresOnly
 import math
 import os
 
@@ -130,8 +130,32 @@ def visualizeMiddleSquares(middleSquares):
 # returns an array of 3-tuples (lines, corners, d) with no overlaps
 def wrapMiddleWithCorners(middleSquares, cornerSquares):
     # create 45 degree extensions from each corner
-    
-    pass
+    middleSquares = moveMiddleSquaresToCenter(middleSquares, getBoundingBoxForMiddle(middleSquares))
+    innerCorners = filterCornersForInnerFacingSquaresOnly(cornerSquares)
+
+    cornerExtensions = get45ExtensionsFromCorners(innerCorners)
+    distancesToTry = getDistancesToTryForCorners(innerCorners, middleSquares, cornerExtensions)
+
+    newCorners = tryMovingCorners(cornerSquares, middleSquares, distancesToTry)
+    if newCorners is None:
+        print("FAILED!")
+        return [], []
+
+    if os.path.exists("outputs/corner_and_middle.txt"):
+        os.remove("outputs/corner_and_middle.txt")
+
+    with open("outputs/corner_and_middle.txt", "w") as f:
+        for corner in cornerSquares:
+            for square in corner:
+                f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
+        for square in middleSquares:
+            f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
+        for corner in newCorners:
+            for square in corner:
+                f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
+        f.close()
+
+    return middleSquares, newCorners
 
 # middleSquares is an array of 3-tuples (lines, corners, d) (overlaps should be fixed already)
 # returns the bounding box for the middle squares in the form (left, right, top, bottom)
@@ -168,13 +192,107 @@ def moveMiddleSquaresToCenter(middleSquares, boundingBox):
 
     return newSquares
 
-# square is a 3-tuple (lines, corners, d)
-# moveX and moveY are values to move along the x and y axes
-# returns a new square tuple after moving by moveX and moveY
-def moveSquare(square, moveX, moveY):
-    lines, corners, d = square
-    newCorners = [(x + moveX, y + moveY) for x, y in corners]
-    newSides = []
-    for i in range(4):
-        newSides.append(getBoundedFunctionForSide(newCorners[i], newCorners[(i + 1) % 4]))
-    return (newSides, newCorners, d)
+# get 45-degree lines extending from all the corners in the corners
+def get45ExtensionsFromCorners(innerCorners):
+    angles = [315, 225, 135, 45]
+    extensions = []
+    for i in range(len(innerCorners)):
+        pointsToExtendFrom = set()
+        for squares in innerCorners[i]:
+            _, corners, _ = squares
+            for j in range(len(corners)):
+                if j == i:
+                    # skip the outer corner, it's redundant with inner
+                    continue
+                pointsToExtendFrom.add(corners[j])
+        
+        for point in pointsToExtendFrom:
+            extensions.append(utils.getBoundedLineThroughPoint(angles[i], point[0], point[1]))
+    
+    return extensions
+
+# get distances to try for moving the corners to the middle squares
+def getDistancesToTryForCorners(innerCorners, middleSquares, cornerExtensions):
+    distancesToTry = []
+    maxDist = 100 * math.sqrt(2)
+
+    # extend corners towards middle
+    for extension in cornerExtensions:
+        for square in middleSquares:
+            for side in square[0]:
+                intersection = utils.getIntersection(extension, side)
+                if intersection is not None:
+                    a, b, c, bound = extension
+                    x = bound[0] if bound[0] != -math.inf else bound[1]
+                    y = (c - a*x) / b
+                    dist = utils.getDistance((x, y), intersection)
+                    if dist < maxDist:
+                        distancesToTry.append(dist)
+
+    angles = [135, 45, 315, 225]
+    # extend middle squares towards corners
+    for square in middleSquares:
+        for i in range(len(innerCorners)):
+            extensions = [utils.getBoundedLineThroughPoint(angles[i], x, y) for x, y in square[1]]
+            for j in range(len(extensions)):
+                for cornerSquare in innerCorners[i]:
+                    for side in cornerSquare[0]:
+                        intersection = utils.getIntersection(extensions[j], side)
+                        if intersection is not None:
+                            dist = utils.getDistance(square[1][j], intersection)
+                            if dist < maxDist:
+                                distancesToTry.append(dist)
+
+    return distancesToTry
+
+def tryMovingCorners(cornerSquares, middleSquares, distancesToTry):
+    distancesToTry.sort(reverse=True)
+    moveMultiplier = [(1, -1), (-1, -1), (-1, 1), (1, 1)]
+    for distance in distancesToTry:
+        xyDist = distance / math.sqrt(2)
+        newCorners = []
+        for i in range(len(cornerSquares)):
+            newCorners.append([utils.moveSquare(square, xyDist * moveMultiplier[i][0], xyDist * moveMultiplier[i][1]) for square in cornerSquares[i]])
+
+        # check if the new arrangement is valid
+        if not isCornerMiddleOverlap(newCorners, middleSquares) and not isCornerCornerOverlap(newCorners):
+            return newCorners
+    
+    return None
+        
+def isCornerMiddleOverlap(cornerSquares, middleSquares):
+    for corner in cornerSquares:
+        for cornerSquare in corner:
+            for square in middleSquares:
+                if utils.isOverlapping(cornerSquare, square):
+                    return True
+                
+    return False
+
+def isCornerCornerOverlap(cornerSquares):
+    topleftRight, topleftBottom = cornerSquares[0][0][1][0]
+    toprightLeft, toprightBottom = cornerSquares[1][0][1][0]
+    bottomrightLeft, bottomrightTop = cornerSquares[2][0][1][0]
+    bottomleftRight, bottomleftTop = cornerSquares[3][0][1][0]
+
+    for square in cornerSquares[0]:
+        for corner in square[1]:
+            topleftRight = max(topleftRight, corner[0])
+            topleftBottom = min(topleftBottom, corner[1])
+    
+    for square in cornerSquares[1]:
+        for corner in square[1]:
+            toprightLeft = min(toprightLeft, corner[0])
+            toprightBottom = min(toprightBottom, corner[1])
+
+    for square in cornerSquares[2]:
+        for corner in square[1]:
+            bottomrightLeft = min(bottomrightLeft, corner[0])
+            bottomrightTop = max(bottomrightTop, corner[1])
+    
+    for square in cornerSquares[3]:
+        for corner in square[1]:
+            bottomleftRight = max(bottomleftRight, corner[0])
+            bottomleftTop = max(bottomleftTop, corner[1])
+
+    return topleftRight > toprightLeft or toprightBottom < bottomrightTop or bottomrightLeft < bottomleftRight or bottomleftTop > topleftBottom
