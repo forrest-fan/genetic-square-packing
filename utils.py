@@ -199,3 +199,26 @@ def moveSquare(square, moveX, moveY):
     for i in range(4):
         newSides.append(getBoundedFunctionForSide(newCorners[i], newCorners[(i + 1) % 4]))
     return (newSides, newCorners, d)        
+
+def binaryToInteger(binaryString):
+    num = 0
+    for char in binaryString:
+        num *= 2
+        if char == "1":
+            num += 1
+            
+    return num
+
+def integerToBinary(num, length):
+    if num > 2 ** length - 1:
+        raise ValueError("Number is too large for length")
+    
+    binString = ""
+    while num > 0:
+        binString = str(num % 2) + binString
+        num = num // 2
+    
+    if len(binString) < length:
+        binString = "0" * (length - len(binString)) + binString
+
+    return binString

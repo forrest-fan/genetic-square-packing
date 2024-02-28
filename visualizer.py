@@ -4,32 +4,33 @@ from corners import filterCornersForInnerFacingSquaresOnly
 import math
 import os
 
-# numSquares is total number of squares in this packing
-# corners is an array of length 4, each entry is the # of a squares in one corner
-# remaining is an array of length (numSquares - sum(corners)), each entry is a 3-tuple
+# corners is an array of length 4, each element is an array of the squares in the corner (this will be fixed throughout the GA process)
+# middle is an array of length (numSquares - sum(corners)), each entry is a 3-tuple
     # ((x, y), r, d) where (x, y) is the coordinates of 1 corner, r is rotation factor, d is direction to move if overlap
-def visualize(numSquares, corners, remaining):
-    if os.path.exists("outputs/formulas.txt"):
-        os.remove("outputs/formulas.txt")
-    
-    if os.path.exists("outputs/finalFormulas.txt"):
-        os.remove("outputs/finalFormulas.txt")
-
-    squareInfo = [utils.getSquareInfo(square) for square in remaining]
-    with open ("outputs/formulas.txt", "w") as f:
-        # save formulas to plug into desmos
-        for square in squareInfo:
-            f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
-        f.close()
-
+def visualize(corners, middle, writeToFile=False):
+    squareInfo = [utils.getSquareInfo(square) for square in middle]
     squareInfoFixed = fixOverlaps(squareInfo)
-    with open ("outputs/finalFormulas.txt", "w") as f:
-        # save formulas to plug into desmos
-        for square in squareInfoFixed:
+    
+    if writeToFile:
+        if os.path.exists("outputs/formulas.txt"):
+            os.remove("outputs/formulas.txt")
+        with open ("outputs/formulas.txt", "w") as f:
+            # save formulas to plug into desmos
+            for square in squareInfo:
                 f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
-        f.close()
+            f.close()
+        
+        if os.path.exists("outputs/finalFormulas.txt"):
+            os.remove("outputs/finalFormulas.txt")
+        with open ("outputs/finalFormulas.txt", "w") as f:
+            # save formulas to plug into desmos
+            for square in squareInfoFixed:
+                    f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
+            f.close()
 
-    return
+    newCorners = wrapMiddleWithCorners(squareInfoFixed, corners, writeToFile)
+
+    return newCorners, squareInfoFixed
 
 # squares is an array of 3-tuples (lines, corners, d)
 # returns an array of 3-tuples (lines, corners, d) with no overlaps
@@ -128,7 +129,10 @@ def visualizeMiddleSquares(middleSquares):
 # middleSquares is an array of 3-tuples (lines, corners, d) (overlaps should be fixed already)
 # cornerSquares is a list of 4 arrays of 3-tuples (lines, corners, d); started at (100, 100) for each corner
 # returns an array of 3-tuples (lines, corners, d) with no overlaps
-def wrapMiddleWithCorners(middleSquares, cornerSquares):
+def wrapMiddleWithCorners(middleSquares, cornerSquares, writeToFile=False):
+    if sum([len(corner) for corner in cornerSquares]) == 0:
+        return [], []
+        
     # create 45 degree extensions from each corner
     middleSquares = moveMiddleSquaresToCenter(middleSquares, getBoundingBoxForMiddle(middleSquares))
     innerCorners = filterCornersForInnerFacingSquaresOnly(cornerSquares)
@@ -141,19 +145,20 @@ def wrapMiddleWithCorners(middleSquares, cornerSquares):
         print("FAILED!")
         return [], []
 
-    if os.path.exists("outputs/corner_and_middle.txt"):
-        os.remove("outputs/corner_and_middle.txt")
+    if writeToFile:
+        if os.path.exists("outputs/corner_and_middle.txt"):
+            os.remove("outputs/corner_and_middle.txt")
 
-    with open("outputs/corner_and_middle.txt", "w") as f:
-        for corner in cornerSquares:
-            for square in corner:
+        with open("outputs/corner_and_middle.txt", "w") as f:
+            for corner in cornerSquares:
+                for square in corner:
+                    f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
+            for square in middleSquares:
                 f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
-        for square in middleSquares:
-            f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
-        for corner in newCorners:
-            for square in corner:
-                f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
-        f.close()
+            for corner in newCorners:
+                for square in corner:
+                    f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
+            f.close()
 
     return middleSquares, newCorners
 
