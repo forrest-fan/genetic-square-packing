@@ -198,7 +198,26 @@ def moveSquare(square, moveX, moveY):
     newSides = []
     for i in range(4):
         newSides.append(getBoundedFunctionForSide(newCorners[i], newCorners[(i + 1) % 4]))
-    return (newSides, newCorners, d)        
+    return (newSides, newCorners, d)
+
+# squares is an array of 3-tuples (lines, corners, d) (overlaps should be fixed already)
+# returns the bounding box for the middle squares in the form (left, right, top, bottom)
+def getBoundingBox(squares):
+    left = math.inf
+    right = -math.inf
+    top = -math.inf
+    bottom = math.inf
+
+    for square in squares:
+        _, corners, _ = square
+        for corner in corners:
+            x, y = corner
+            left = min(left, x)
+            right = max(right, x)
+            top = max(top, y)
+            bottom = min(bottom, y)
+
+    return (left, right, top, bottom)   
 
 def binaryToInteger(binaryString):
     num = 0

@@ -28,9 +28,9 @@ def visualize(corners, middle, writeToFile=False):
                     f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
             f.close()
 
-    newCorners = wrapMiddleWithCorners(squareInfoFixed, corners, writeToFile)
+    newMiddle, newCorners = wrapMiddleWithCorners(squareInfoFixed, corners, writeToFile)
 
-    return newCorners, squareInfoFixed
+    return newMiddle, newCorners
 
 # squares is an array of 3-tuples (lines, corners, d)
 # returns an array of 3-tuples (lines, corners, d) with no overlaps
@@ -115,7 +115,7 @@ def getDistancesToTry(square, allSquares):
     return distancesToTry, extensions
 
 def visualizeMiddleSquares(middleSquares):
-    boundingBox = getBoundingBoxForMiddle(middleSquares)
+    boundingBox = utils.getBoundingBox(middleSquares)
     centeredSquares = moveMiddleSquaresToCenter(middleSquares, boundingBox)
     if os.path.exists("outputs/centeredSquares.txt"):
         os.remove("outputs/centeredSquares.txt")
@@ -134,7 +134,7 @@ def wrapMiddleWithCorners(middleSquares, cornerSquares, writeToFile=False):
         return [], []
         
     # create 45 degree extensions from each corner
-    middleSquares = moveMiddleSquaresToCenter(middleSquares, getBoundingBoxForMiddle(middleSquares))
+    middleSquares = moveMiddleSquaresToCenter(middleSquares, utils.getBoundingBox(middleSquares))
     innerCorners = filterCornersForInnerFacingSquaresOnly(cornerSquares)
 
     cornerExtensions = get45ExtensionsFromCorners(innerCorners)
@@ -150,9 +150,6 @@ def wrapMiddleWithCorners(middleSquares, cornerSquares, writeToFile=False):
             os.remove("outputs/corner_and_middle.txt")
 
         with open("outputs/corner_and_middle.txt", "w") as f:
-            for corner in cornerSquares:
-                for square in corner:
-                    f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
             for square in middleSquares:
                 f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
             for corner in newCorners:
@@ -161,25 +158,6 @@ def wrapMiddleWithCorners(middleSquares, cornerSquares, writeToFile=False):
             f.close()
 
     return middleSquares, newCorners
-
-# middleSquares is an array of 3-tuples (lines, corners, d) (overlaps should be fixed already)
-# returns the bounding box for the middle squares in the form (left, right, top, bottom)
-def getBoundingBoxForMiddle(middleSquares):
-    left = math.inf
-    right = -math.inf
-    top = -math.inf
-    bottom = math.inf
-
-    for square in middleSquares:
-        _, corners, _ = square
-        for corner in corners:
-            x, y = corner
-            left = min(left, x)
-            right = max(right, x)
-            top = max(top, y)
-            bottom = min(bottom, y)
-
-    return (left, right, top, bottom)
 
 # middleSquares is an array of 3-tuples (lines, corners, d) (overlaps should be fixed already)
 # boundingBox is a 4-tuple (left, right, top, bottom)

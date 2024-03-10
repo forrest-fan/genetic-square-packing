@@ -5,9 +5,9 @@ import random
 # Chromosome encoding
 NUM_BITS_NUMBER_OF_MIDDLE_SQUARES = 8
 # for each square
-NUM_BITS_X_COORDINATE = 16
+NUM_BITS_X_COORDINATE = 15
 DIVISOR_X_COORDINATE = 1000 # divide by 1000
-NUM_BITS_Y_COORDINATE = 16
+NUM_BITS_Y_COORDINATE = 15
 DIVISOR_Y_COORDINATE = 1000 # divide by 1000
 NUM_BITS_ROTATION = 10
 MODULO_ROTATION = 900 # mod 900
@@ -41,7 +41,16 @@ def fitness_function(cornerSquares, chromosome, visualizeSquare=False):
 
         squares.append(((x, y), r, d))
 
-    finalCorners, finalMiddle = visualizer.visualize(cornerSquares, squares, visualizeSquare)
+    finalMiddle, finalCorners = visualizer.visualize(cornerSquares, squares, visualizeSquare)
+
+    boundingBox = utils.getBoundingBox(finalMiddle)
+    for corner in finalCorners:
+        cornerBoundingBox = utils.getBoundingBox(corner)
+        if cornerBoundingBox[0] < boundingBox[0]:
+            boundingBox = cornerBoundingBox
+    
+    longSide = max(boundingBox[1] - boundingBox[0], boundingBox[2] - boundingBox[3])
+    return longSide * longSide
 
 def generateRandomChromosome(n):
     chromsome = ""

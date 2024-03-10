@@ -45,4 +45,5 @@ visualizer.wrapMiddleWithCorners(fixedSquares, cornerSquares)
 
 n = 10
 chromosome = genetic_algorithm.generateRandomChromosome(n)
-genetic_algorithm.fitness_function(cornerSquares, chromosome, visualizeSquare=True)
+area = genetic_algorithm.fitness_function(cornerSquares, chromosome, visualizeSquare=True)
+print("Area:", area)
