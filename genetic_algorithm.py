@@ -50,7 +50,7 @@ def fitness_function(cornerSquares, chromosome, visualizeSquare=False):
             boundingBox = cornerBoundingBox
     
     longSide = max(boundingBox[1] - boundingBox[0], boundingBox[2] - boundingBox[3])
-    return longSide * longSide
+    return longSide
 
 def generateRandomChromosome(n):
     chromsome = ""
@@ -62,8 +62,29 @@ def generateRandomChromosome(n):
         chromsome += generateRandomBinarySequence(NUM_BITS_ROTATION)
         chromsome += generateRandomBinarySequence(NUM_BITS_SQUARE_DIRECTION)
 
-    print("Random chromosome:", chromsome)
     return chromsome
 
 def generateRandomBinarySequence(n):
     return ''.join([str(random.randint(0, 1)) for _ in range(n)])
+
+def crossover(chromosome1, chromosome2, begin, end):
+    newChromosome1 = chromosome1[:begin] + chromosome2[begin:end] + chromosome1[end:]
+    newChromosome2 = chromosome2[:begin] + chromosome1[begin:end] + chromosome2[end:]
+    return newChromosome1, newChromosome2
+
+def mutation_flipbit(chromosome, flipProbability):
+    chromosomeList = list(chromosome)
+    for bit in range(len(chromosome)):
+        if random.random() < flipProbability:
+            chromosomeList[bit] = '1' if chromosomeList[bit] == '0' else '0'
+
+    return ''.join(chromosomeList)
+
+def roulette_wheel_selection(population):
+    pass
+
+# convert a fitness (area of bounding square) to a probability for selection
+# when fitness = minSideLength, we have highest probability; as fitness increases, probability decreases
+# selectionPressure is a parameter that determines how quickly the probability decreases
+def area_fitness_to_probability(fitness, minSideLength, selectionPressure=1):
+    return minSideLength/pow(fitness, selectionPressure)
