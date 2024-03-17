@@ -1,6 +1,7 @@
 import visualizer
 import utils
 import random
+import numpy as np
 
 # Chromosome encoding
 NUM_BITS_NUMBER_OF_MIDDLE_SQUARES = 8
@@ -80,11 +81,22 @@ def mutation_flipbit(chromosome, flipProbability):
 
     return ''.join(chromosomeList)
 
-def roulette_wheel_selection(population):
-    pass
+# Assign probabilities to chromosomes based on their fitness, return numToSelect chromosomes in a mating pool
+# higher selectionPressure means higher probability of selecting fitter chromosomes
+def roulette_wheel_selection(chromosomes, fitnesses, numToSelect, selectionPressure=1):
+    minSideLength = min(fitnesses)
+    scores = [area_fitness_to_score(fitness, minSideLength, selectionPressure) for fitness in fitnesses]
+    totalScore = sum(scores)
+    probabilities = [score / totalScore for score in scores]
 
-# convert a fitness (area of bounding square) to a probability for selection
-# when fitness = minSideLength, we have highest probability; as fitness increases, probability decreases
-# selectionPressure is a parameter that determines how quickly the probability decreases
-def area_fitness_to_probability(fitness, minSideLength, selectionPressure=1):
-    return minSideLength/pow(fitness, selectionPressure)
+    matingPool = np.random.choice(chromosomes, numToSelect, p=probabilities, replace=False)
+    return matingPool
+
+# convert a fitness (area of bounding square) to a score for selection
+# when fitness = minSideLength, we have highest score; as fitness increases, score decreases
+# selectionPressure is a parameter that determines how quickly the score decreases
+def area_fitness_to_score(fitness, minSideLength, selectionPressure=1):
+    try:
+        return minSideLength/pow(fitness, selectionPressure)
+    except ZeroDivisionError:
+        return 0
