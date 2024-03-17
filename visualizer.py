@@ -199,6 +199,13 @@ def getDistancesToTryForCorners(innerCorners, middleSquares, cornerExtensions):
     distancesToTry = []
     maxDist = 100 * math.sqrt(2)
 
+    # do not move the corners beyond the bounding box.. this prevents corners from being inside the "middle" squares
+    boundingBox = utils.getBoundingBox(middleSquares)
+    top = boundingBox[2]
+    left = boundingBox[0]
+    dist = min(100 - top, 100 - left)
+    maxDist = min(maxDist, dist * math.sqrt(2))   
+
     # extend corners towards middle
     for extension in cornerExtensions:
         for square in middleSquares:

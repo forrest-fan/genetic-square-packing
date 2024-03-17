@@ -45,11 +45,18 @@ def fitness_function(cornerSquares, chromosome, visualizeSquare=False):
     finalMiddle, finalCorners = visualizer.visualize(cornerSquares, squares, visualizeSquare)
 
     boundingBox = utils.getBoundingBox(finalMiddle)
-    for corner in finalCorners:
-        cornerBoundingBox = utils.getBoundingBox(corner)
-        if cornerBoundingBox[0] < boundingBox[0]:
-            boundingBox = cornerBoundingBox
     
+    left, right, top, bottom = boundingBox
+    for corner in finalCorners:
+        for square in corner:
+            for point in square[1]:
+                x, y = point
+                left = min(left, x)
+                right = max(right, x)
+                top = max(top, y)
+                bottom = min(bottom, y)
+    boundingBox = (left, right, top, bottom)
+
     longSide = max(boundingBox[1] - boundingBox[0], boundingBox[2] - boundingBox[3])
     return longSide
 

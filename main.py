@@ -52,7 +52,7 @@ print("Side:", side)
 
 i = 0.5
 while i <= 2.5:
-    print("sel pressure:", i)
+    # print("sel pressure:", i)
     pool = genetic_algorithm.roulette_wheel_selection(["1", "2", "3", "4", "5", "6", "7"], [2, 4, 8, 50, 80, 99, 1000], 4, i)
-    print(pool)
+    # print(pool)
     i += 0.5
