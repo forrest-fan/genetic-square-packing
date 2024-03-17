@@ -142,7 +142,6 @@ def wrapMiddleWithCorners(middleSquares, cornerSquares, writeToFile=False):
 
     newCorners = tryMovingCorners(cornerSquares, middleSquares, distancesToTry)
     if newCorners is None:
-        print("FAILED!")
         return [], []
 
     if writeToFile:

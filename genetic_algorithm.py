@@ -1,6 +1,8 @@
 import visualizer
 import utils
+
 import random
+import math
 import numpy as np
 
 # Chromosome encoding
@@ -43,6 +45,10 @@ def fitness_function(cornerSquares, chromosome, visualizeSquare=False):
         squares.append(((x, y), r, d))
 
     finalMiddle, finalCorners = visualizer.visualize(cornerSquares, squares, visualizeSquare)
+
+    if len(finalMiddle) == 0 and len(finalCorners) == 0:
+        # Could not get valid arrangement
+        return math.inf
 
     boundingBox = utils.getBoundingBox(finalMiddle)
     
@@ -103,7 +109,7 @@ def roulette_wheel_selection(chromosomes, fitnesses, numToSelect, selectionPress
 # when fitness = minSideLength, we have highest score; as fitness increases, score decreases
 # selectionPressure is a parameter that determines how quickly the score decreases
 def area_fitness_to_score(fitness, minSideLength, selectionPressure=1):
-    try:
-        return minSideLength/pow(fitness, selectionPressure)
-    except ZeroDivisionError:
+    if fitness == math.inf or fitness == 0:
         return 0
+    else:
+        return minSideLength/pow(fitness, selectionPressure)
