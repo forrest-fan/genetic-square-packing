@@ -3,8 +3,6 @@ import corners
 import utils
 import genetic_algorithm
 
-import random
-
 # Test base visualizer, no overlap
 squares = [((4, 3), 75, 12), ((13, 2), 45, 1), ((2, -1), 30, 2), ((2, 2), 0, 0)]
 visualizer.visualize([[], [], [], []], squares, writeToFile=True)
@@ -53,6 +51,8 @@ print("Side:", side)
 i = 0.5
 while i <= 2.5:
     # print("sel pressure:", i)
-    pool = genetic_algorithm.roulette_wheel_selection(["1", "2", "3", "4", "5", "6", "7"], [2, 4, 8, 50, 80, 99, 1000], 4, i)
+    pool = genetic_algorithm.rouletteWheelSelection(["1", "2", "3", "4", "5", "6", "7"], [2, 4, 8, 50, 80, 99, 1000], 4, i)
     # print(pool)
     i += 0.5
+
+genetic_algorithm.genetic_algorithm(cornerSquares, n, 40, 10, 20, 0.05, 0.01, 0.7, 1, "outputs/try_first_time")

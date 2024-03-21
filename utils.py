@@ -1,4 +1,5 @@
 import math
+import json
 
 def writeDesmosFormulas(square):
     formulas = []
@@ -241,3 +242,24 @@ def integerToBinary(num, length):
         binString = "0" * (length - len(binString)) + binString
 
     return binString
+
+def saveChromosomeInJson(jsonObject, chromosome, fitness, generation, parents, avgParentFitness, mutations, crossoverRange):
+    # save as -1 to represent infinity
+    if fitness == math.inf:
+        fitness = -1
+
+    newChromosome = {
+        "chromosome": chromosome,
+        "fitness": fitness,
+        "generation": generation,
+        "parents": parents,
+        "avgParentFitness": avgParentFitness,
+        "mutations": mutations,
+        "crossoverRange": crossoverRange
+    }
+
+    jsonObject.append(newChromosome)
+
+def saveLogsToFile(jsonObject, filename):
+    with open (filename, 'w') as f:
+        json.dump(jsonObject, f)
