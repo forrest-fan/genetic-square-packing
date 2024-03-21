@@ -35,11 +35,11 @@ visualizer.visualize([[], [], [], []], [sq1Before, sq2Before, sq3Before, sq4Befo
 # test corner generation, moved to respective (100, 100)
 cornerSquares = corners.assembleCornerSquares([12, 7, 6, 5], corners.generateFromInsideOut)
 filteredCornerSquares = corners.filterCornersForInnerFacingSquaresOnly(cornerSquares)
-corners.writeFormulasToFile(filteredCornerSquares)
+# corners.writeFormulasToFile(filteredCornerSquares)
 
 # test moving bounding box of squares to middle
 fixedSquares = visualizer.fixOverlaps([utils.getSquareInfo(sq) for sq in [sq1Before, sq2Before, sq3Before, sq4Before, sq5Before]])
-visualizer.visualizeMiddleSquares(fixedSquares)
+# visualizer.visualizeMiddleSquares(fixedSquares)
 
 visualizer.wrapMiddleWithCorners(fixedSquares, cornerSquares)
 

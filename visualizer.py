@@ -10,23 +10,6 @@ import os
 def visualize(corners, middle, writeToFile=False):
     squareInfo = [utils.getSquareInfo(square) for square in middle]
     squareInfoFixed = fixOverlaps(squareInfo)
-    
-    if writeToFile:
-        if os.path.exists("outputs/formulas.txt"):
-            os.remove("outputs/formulas.txt")
-        with open ("outputs/formulas.txt", "w") as f:
-            # save formulas to plug into desmos
-            for square in squareInfo:
-                f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
-            f.close()
-        
-        if os.path.exists("outputs/finalFormulas.txt"):
-            os.remove("outputs/finalFormulas.txt")
-        with open ("outputs/finalFormulas.txt", "w") as f:
-            # save formulas to plug into desmos
-            for square in squareInfoFixed:
-                    f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
-            f.close()
 
     newMiddle, newCorners = wrapMiddleWithCorners(squareInfoFixed, corners, writeToFile)
 
@@ -145,10 +128,10 @@ def wrapMiddleWithCorners(middleSquares, cornerSquares, writeToFile=False):
         return [], []
 
     if writeToFile:
-        if os.path.exists("outputs/corner_and_middle.txt"):
-            os.remove("outputs/corner_and_middle.txt")
+        if os.path.exists("outputs/formulas.txt"):
+            os.remove("outputs/formulas.txt")
 
-        with open("outputs/corner_and_middle.txt", "w") as f:
+        with open("outputs/formulas.txt", "w") as f:
             for square in middleSquares:
                 f.write("\n".join(utils.writeDesmosFormulas(square)) + "\n")
             for corner in newCorners:
