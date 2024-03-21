@@ -174,6 +174,9 @@ def generateRandomBinarySequence(n):
     return ''.join([str(random.randint(0, 1)) for _ in range(n)])
 
 def crossover(chromosome1, chromosome2, begin, end):
+    begin = max(begin, NUM_BITS_NUMBER_OF_MIDDLE_SQUARES + 1)
+    end = min(end, len(chromosome1))
+    end = max(end, begin + 1)
     newChromosome1 = chromosome1[:begin] + chromosome2[begin:end] + chromosome1[end:]
     newChromosome2 = chromosome2[:begin] + chromosome1[begin:end] + chromosome2[end:]
     return newChromosome1, newChromosome2
@@ -181,7 +184,7 @@ def crossover(chromosome1, chromosome2, begin, end):
 def mutationFlipbits(chromosome, flipProbability):
     chromosomeList = list(chromosome)
     mutations = []
-    for bit in range(len(chromosome)):
+    for bit in range(NUM_BITS_NUMBER_OF_MIDDLE_SQUARES + 1, len(chromosome)):
         if random.random() < flipProbability:
             chromosomeList[bit] = '1' if chromosomeList[bit] == '0' else '0'
             mutations.append(bit)
