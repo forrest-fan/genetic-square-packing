@@ -17,6 +17,21 @@ def writeFormulasToFile(cornerSquareInfo):
 
         f.close()
 
+def readCornersFromFile(filename):
+    with open(filename) as f:
+        corners = []
+        for line in f:
+            squares = []
+            for coordinate in line.split(";"):
+                x, y = coordinate.split(",")
+                squares.append((int(x), int(y)))
+            corners.append(squares)
+    
+    corners = [moveCornerTo100(corner, i) for i, corner in enumerate(corners)]
+    corners = getCornerSquareInfo(corners)
+
+    return corners
+
 # returns a nested list of squares that are in the corners
 # uses a generation function to generate the squares, can define new ones to try different corner configs
 # cornerIndex 0 is top left, move clockwise
