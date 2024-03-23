@@ -4,7 +4,6 @@ import utils
 import random
 import math
 import numpy as np
-import time
 
 # Chromosome encoding
 NUM_BITS_NUMBER_OF_MIDDLE_SQUARES = 8
@@ -20,98 +19,12 @@ NUM_BITS_SQUARE_DIRECTION = 12
 MODULO_SQUARE_DIRECTION = 3600 # mod 3600
 DIVISOR_SQUARE_DIRECTION = 10 # divide by 10
 
-def genetic_algorithm(cornerSquares, n, populationSize, matingPoolSize, numGenerations, mutationProbability, mutationPerBitProbability, crossoverProbability, selectionPressure, outputFilename):
-    population = [generateRandomChromosome(n) for _ in range(populationSize)]
-    generation = 0
-
-    logs = []
-    generationSummary = []
-
-    matingTime = 0
-
-    while generation <= numGenerations:
-        print("Running generation", generation + 1, "of", numGenerations)
-
-        startTime = time.time()
-        fitnesses = [fitness_function(cornerSquares, chromosome) for chromosome in population]
-        fitnessTime = time.time() - startTime
-        fitnesses, population = zip(*sorted(zip(fitnesses, population)))
-        currentSummary = {
-            "topFitnesses": fitnesses[:5],
-            "topChromosomes": population[:5],
-            "generation": generation,
-            "bestFitness": min(fitnesses),
-            "10percentileFitness": np.percentile(fitnesses, 10),
-            "25percentileFitness": np.percentile(fitnesses, 25),
-            "medianFitness": np.median(fitnesses),
-            "fitnessTime": fitnessTime,
-            "matingTime": matingTime
-        }
-        
-        generationSummary.append(currentSummary)
-
-        if generation == numGenerations:
-            # so we have analysis of last generation
-            break
-
-        startTime = time.time()
-        matingPool = rouletteWheelSelection(population, fitnesses, matingPoolSize, selectionPressure)
-        nextGeneration = []
-
-        while len(nextGeneration) < populationSize:
-            randIdx1 = random.randint(0, matingPoolSize - 1)
-            randIdx2 = random.randint(0, matingPoolSize - 1)
-            parent1 = matingPool[randIdx1]
-            parent2 = matingPool[randIdx2]
-            avgParentFitness = (fitnesses[randIdx1] + fitnesses[randIdx2]) / 2
-
-            crossed = False
-            if random.random() < crossoverProbability:
-                crossed = True
-                crossoverPoint = random.randint(0, len(parent1) - 1)
-                newChromosome1, newChromosome2 = crossover(parent1, parent2, crossoverPoint, len(parent1))
-            else:
-                newChromosome1 = parent1
-                newChromosome2 = parent2
-
-            mutated1 = False
-            mutated2 = False
-            if random.random() < mutationProbability:
-                mutated1 = True
-                newChromosome1, mutations1 = mutationFlipbits(newChromosome1, mutationPerBitProbability)
-            if random.random() < mutationProbability:
-                mutated2 = True
-                newChromosome2, mutations2 = mutationFlipbits(newChromosome2, mutationPerBitProbability)
-
-            nextGeneration.append(newChromosome1)
-            nextGeneration.append(newChromosome2)
-
-            utils.saveChromosomeInJson(logs,
-                newChromosome1,
-                fitness_function(cornerSquares, newChromosome1),
-                generation + 1,
-                (parent1, parent2) if crossed else parent1,
-                avgParentFitness if crossed else fitnesses[randIdx1],
-                mutations1 if mutated1 else [],
-                (crossoverPoint, len(parent1)) if crossed else (-1, -1))
-            
-            utils.saveChromosomeInJson(logs,
-                newChromosome2,
-                fitness_function(cornerSquares, newChromosome1),
-                generation + 1,
-                (parent1, parent2) if crossed else parent2,
-                avgParentFitness if crossed else fitnesses[randIdx2],
-                mutations2 if mutated2 else [],
-                (crossoverPoint, len(parent2)) if crossed else (-1, -1))
-            
-        matingTime = time.time() - startTime
-        
-        print("Generation", generation + 1, "done")
-        population = nextGeneration
-        generation += 1
-
-    utils.saveLogsToFile(logs, outputFilename + "_chromosomes.json")
-    utils.saveLogsToFile(generationSummary, outputFilename + "_summary.json")
+def parallel_fitness_helper(i, cornerSquares, chromosome, fitnesses, logs, saveToLog=True):
+    fitness = fitness_function(cornerSquares, chromosome)
+    fitnesses[i] = fitness
+    if saveToLog:
+        # disabled for first run since not in log JSON
+        logs[chromosome]["fitness"] = fitness    
 
 def fitness_function(cornerSquares, chromosome, visualizeSquare=False):
     # 8 bits number of squares in middle

@@ -243,14 +243,9 @@ def integerToBinary(num, length):
 
     return binString
 
-def saveChromosomeInJson(jsonObject, chromosome, fitness, generation, parents, avgParentFitness, mutations, crossoverRange):
-    # save as -1 to represent infinity
-    if fitness == math.inf:
-        fitness = -1
-
+def saveChromosomeInJson(jsonObject, chromosome, generation, parents, avgParentFitness, mutations, crossoverRange):
     newChromosome = {
         "chromosome": chromosome,
-        "fitness": fitness,
         "generation": generation,
         "parents": parents,
         "avgParentFitness": avgParentFitness,
@@ -258,7 +253,7 @@ def saveChromosomeInJson(jsonObject, chromosome, fitness, generation, parents, a
         "crossoverRange": crossoverRange
     }
 
-    jsonObject.append(newChromosome)
+    jsonObject[chromosome] = newChromosome
 
 def saveLogsToFile(jsonObject, filename):
     with open (filename, 'w') as f:
