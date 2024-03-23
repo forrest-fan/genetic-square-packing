@@ -263,3 +263,4 @@ def saveChromosomeInJson(jsonObject, chromosome, fitness, generation, parents, a
 def saveLogsToFile(jsonObject, filename):
     with open (filename, 'w') as f:
         json.dump(jsonObject, f)
+        f.close()

@@ -9,9 +9,9 @@ import time
 # Chromosome encoding
 NUM_BITS_NUMBER_OF_MIDDLE_SQUARES = 8
 # for each square
-NUM_BITS_X_COORDINATE = 15
+NUM_BITS_X_COORDINATE = 12
 DIVISOR_X_COORDINATE = 1000 # divide by 1000
-NUM_BITS_Y_COORDINATE = 15
+NUM_BITS_Y_COORDINATE = 12
 DIVISOR_Y_COORDINATE = 1000 # divide by 1000
 NUM_BITS_ROTATION = 10
 MODULO_ROTATION = 900 # mod 900
@@ -36,17 +36,19 @@ def genetic_algorithm(cornerSquares, n, populationSize, matingPoolSize, numGener
         fitnesses = [fitness_function(cornerSquares, chromosome) for chromosome in population]
         fitnessTime = time.time() - startTime
         fitnesses, population = zip(*sorted(zip(fitnesses, population)))
-        generationSummary.append({
+        currentSummary = {
             "topFitnesses": fitnesses[:5],
             "topChromosomes": population[:5],
             "generation": generation,
             "bestFitness": min(fitnesses),
-            "10percentilFitness": np.percentile(fitnesses, 10),
+            "10percentileFitness": np.percentile(fitnesses, 10),
             "25percentileFitness": np.percentile(fitnesses, 25),
             "medianFitness": np.median(fitnesses),
             "fitnessTime": fitnessTime,
             "matingTime": matingTime
-        })
+        }
+        
+        generationSummary.append(currentSummary)
 
         if generation == numGenerations:
             # so we have analysis of last generation
@@ -140,7 +142,7 @@ def fitness_function(cornerSquares, chromosome, visualizeSquare=False):
 
     if len(finalMiddle) == 0 and len(finalCorners) == 0:
         # Could not get valid arrangement
-        return math.inf
+        return 10000000
 
     boundingBox = utils.getBoundingBox(finalMiddle)
     
