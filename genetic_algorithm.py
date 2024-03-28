@@ -109,8 +109,7 @@ def mutationFlipbits(chromosome, flipProbability):
 # Assign probabilities to chromosomes based on their fitness, return numToSelect chromosomes in a mating pool
 # higher selectionPressure means higher probability of selecting fitter chromosomes
 def rouletteWheelSelection(chromosomes, fitnesses, numToSelect, selectionPressure=1):
-    minSideLength = min(fitnesses)
-    scores = [fitnessToScore(fitness, minSideLength, selectionPressure) for fitness in fitnesses]
+    scores = [fitnessToScore(fitness, selectionPressure) for fitness in fitnesses]
     totalScore = sum(scores)
     probabilities = [score / totalScore for score in scores]
 
@@ -121,8 +120,8 @@ def rouletteWheelSelection(chromosomes, fitnesses, numToSelect, selectionPressur
 # we need to do this because a smaller side is better, but we want larger score
 # when fitness = minSideLength, we have highest score; as fitness increases, score decreases
 # selectionPressure is a parameter that determines how quickly the score decreases
-def fitnessToScore(fitness, minSideLength, selectionPressure=1):
+def fitnessToScore(fitness, selectionPressure=1):
     if fitness == math.inf or fitness == 0:
         return 0
     else:
-        return minSideLength/pow(fitness, selectionPressure)
+        return 1/pow(fitness, selectionPressure)
