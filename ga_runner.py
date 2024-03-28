@@ -34,8 +34,8 @@ if __name__ == "__main__" and len(sys.argv) == 10:
     population = [genetic_algorithm.generateRandomChromosome(n) for _ in range(populationSize)]
     generation = 0
 
-    logs = []
-    tempLogs = {}
+    # logs = []
+    # tempLogs = {}
     generationSummary = []
 
     matingTime = 0
@@ -44,7 +44,7 @@ if __name__ == "__main__" and len(sys.argv) == 10:
         print("Running generation", generation + 1, "of", numGenerations)
         startTime = time.time()
 
-        fitnesses = [0] * populationSize
+        # fitnesses = [0] * populationSize
         # threads = []
         # for i in range(populationSize):
         #     th = multiprocessing.Process(target=genetic_algorithm.parallel_fitness_helper, args=(i, cornerSquares, population[i], fitnesses, logs, generation != 0))
@@ -53,13 +53,14 @@ if __name__ == "__main__" and len(sys.argv) == 10:
         # for th in threads:
         #     th.join()
 
-        for i in range(populationSize):
-            genetic_algorithm.parallel_fitness_helper(i, cornerSquares, population[i], fitnesses, tempLogs, generation != 0)
+        # for i in range(populationSize):
+        #     genetic_algorithm.parallel_fitness_helper(i, cornerSquares, population[i], fitnesses, tempLogs, generation != 0)
 
+        fitnesses = [genetic_algorithm.fitness_function(cornerSquares, chromosome) for chromosome in population]
         fitnessTime = time.time() - startTime
         
-        for k, v in tempLogs.items():
-            logs.append(v)
+        # for k, v in tempLogs.items():
+        #     logs.append(v)
 
         fitnesses, population = zip(*sorted(zip(fitnesses, population)))
         currentSummary = {
@@ -112,21 +113,21 @@ if __name__ == "__main__" and len(sys.argv) == 10:
             nextGeneration.append(newChromosome1)
             nextGeneration.append(newChromosome2)
 
-            utils.saveChromosomeInJson(tempLogs,
-                newChromosome1,
-                generation + 1,
-                (parent1, parent2) if crossed else parent1,
-                avgParentFitness if crossed else fitnesses[randIdx1],
-                mutations1 if mutated1 else [],
-                (crossoverPoint, len(parent1)) if crossed else (-1, -1))
+            # utils.saveChromosomeInJson(tempLogs,
+            #     newChromosome1,
+            #     generation + 1,
+            #     (parent1, parent2) if crossed else parent1,
+            #     avgParentFitness if crossed else fitnesses[randIdx1],
+            #     mutations1 if mutated1 else [],
+            #     (crossoverPoint, len(parent1)) if crossed else (-1, -1))
             
-            utils.saveChromosomeInJson(tempLogs,
-                newChromosome2,
-                generation + 1,
-                (parent1, parent2) if crossed else parent2,
-                avgParentFitness if crossed else fitnesses[randIdx2],
-                mutations2 if mutated2 else [],
-                (crossoverPoint, len(parent2)) if crossed else (-1, -1))
+            # utils.saveChromosomeInJson(tempLogs,
+            #     newChromosome2,
+            #     generation + 1,
+            #     (parent1, parent2) if crossed else parent2,
+            #     avgParentFitness if crossed else fitnesses[randIdx2],
+            #     mutations2 if mutated2 else [],
+            #     (crossoverPoint, len(parent2)) if crossed else (-1, -1))
             
         matingTime = time.time() - startTime
         
@@ -134,5 +135,5 @@ if __name__ == "__main__" and len(sys.argv) == 10:
         population = nextGeneration
         generation += 1
 
-    utils.saveLogsToFile(logs, outputFilename + "_chromosomes.json")
+    # utils.saveLogsToFile(logs, outputFilename + "_chromosomes.json")
     utils.saveLogsToFile(generationSummary, outputFilename + "_summary.json")
